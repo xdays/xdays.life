@@ -20,7 +20,7 @@ jobs:
         uses: rlespinasse/github-slug-action@v3.x
 
       - run: 'echo run unit test'
-        if: contains(github.event.head_commit.message, '@test') && startsWith(env.GITHUB_HEAD_REF_SLUG, 'sandbox-')
+        if: startsWith(env.GITHUB_HEAD_REF_SLUG, 'sandbox-') && contains(github.event.head_commit.message, '@test')
 
   deploy:
     name: deploy
@@ -34,3 +34,6 @@ jobs:
 
       - name: Build Release
         run: yarn &&  yarn run build
+
+      - run: 'fail the workflow when test job is skipped'
+        if: startsWith(env.GITHUB_HEAD_REF_SLUG, 'sandbox-') && ! contains(github.event.head_commit.message, '@test')
