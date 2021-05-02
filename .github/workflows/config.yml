@@ -21,7 +21,7 @@ jobs:
 
       - name: Run unit test
         run: 'echo run unit test'
-        if: startsWith(env.GITHUB_HEAD_REF_SLUG, 'sandbox-') && contains(github.event.head_commit.message, '@test')
+        if: startsWith(env.GITHUB_REF_SLUG, 'sandbox-') && contains(github.event.head_commit.message, '@test')
 
   deploy:
     name: deploy
@@ -40,8 +40,8 @@ jobs:
         run: yarn &&  yarn run build
 
       - name: Debug
-        run: 'echo ${{ env.GITHUB_HEAD_REF_SLUG }}'
+        run: 'echo ${{ env.GITHUB_REF_SLUG }}'
 
       - name: Fail the workflow when test job is skipped
         run: 'exit 1'
-        if: startsWith(env.GITHUB_HEAD_REF_SLUG, 'sandbox-') && ! contains(github.event.head_commit.message, '@test')
+        if: startsWith(env.GITHUB_REF_SLUG, 'sandbox-') && ! contains(github.event.head_commit.message, '@test')
