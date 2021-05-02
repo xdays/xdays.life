@@ -1,12 +1,32 @@
 name: main
 
 on:
-  push
+  push:
+    branches:
+      - master
+      - "staging-*"
+      - "sandbox-*"
 
 jobs:
+  test:
+    name: test
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Inject slug/short variables
+        uses: rlespinasse/github-slug-action@v3.x
+
+      - run: 'echo run unit test'
+        if: contains(github.event.head_commit.message, "@test") and startsWith(env.GITHUB_HEAD_REF_SLUG, "sandbox-")
+
   deploy:
     name: deploy
     runs-on: ubuntu-latest
+    needs:
+      - test
 
     steps:
       - name: Checkout code
