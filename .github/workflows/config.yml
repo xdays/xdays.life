@@ -4,8 +4,8 @@ on:
   push:
     branches:
       - master
-      - "staging-*"
-      - "sandbox-*"
+      - 'staging-*'
+      - 'sandbox-*'
 
 jobs:
   test:
@@ -20,7 +20,7 @@ jobs:
         uses: rlespinasse/github-slug-action@v3.x
 
       - run: 'echo run unit test'
-        if: contains(github.event.head_commit.message, "@test") and startsWith(env.GITHUB_HEAD_REF_SLUG, "sandbox-")
+        if: contains(github.event.head_commit.message, '@test') && startsWith(env.GITHUB_HEAD_REF_SLUG, 'sandbox-')
 
   deploy:
     name: deploy
