@@ -19,7 +19,8 @@ jobs:
       - name: Inject slug/short variables
         uses: rlespinasse/github-slug-action@v3.x
 
-      - run: 'echo run unit test'
+      - name: Run unit test
+        run: 'echo run unit test'
         if: startsWith(env.GITHUB_HEAD_REF_SLUG, 'sandbox-') && contains(github.event.head_commit.message, '@test')
 
   deploy:
@@ -35,5 +36,6 @@ jobs:
       - name: Build Release
         run: yarn &&  yarn run build
 
-      - run: 'fail the workflow when test job is skipped'
+      - name: Fail the workflow when test job is skipped
+        run: 'exit 1'
         if: startsWith(env.GITHUB_HEAD_REF_SLUG, 'sandbox-') && ! contains(github.event.head_commit.message, '@test')
