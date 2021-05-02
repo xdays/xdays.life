@@ -21,6 +21,10 @@ jobs:
         env:
           GITHUB_TOKEN: '${{ secrets.API_TOKEN }}'
 
+      - name: Test workflow
+        run: echo ok
+        if: steps.check.outputs.triggered == 'true'
+
       - name: Invoke workflow with inputs
         uses: benc-uk/workflow-dispatch@v1
         with:
