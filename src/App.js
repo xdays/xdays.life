@@ -24,7 +24,7 @@ const renderer = ({ days, hours, minutes, seconds, completed }) => {
 
 class App extends Component {
   render() {
-    const end = Date.parse("2020-06-30T00:00:00");
+    const end = Date.parse("2021-06-30T00:00:00");
     return (
       <div className="App">
         <header className="App-header">
