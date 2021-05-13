@@ -23,16 +23,20 @@ jobs:
         if: |
           ${{ ( startsWith(env.GITHUB_REF_SLUG, 'sandbox-') && contains(github.event.head_commit.message, '#test')) ||
           ! startsWith(env.GITHUB_REF_SLUG, 'sandbox-') }}
+
+      - name: Install Dependencies
+        run: yarn
+
       - name: Run unit tests for sandbox branches
         run: echo run unit test for sandbox branch when keyword is matched
         if: startsWith(env.GITHUB_REF_SLUG, 'sandbox-') && contains(github.event.head_commit.message, '#test')
 
       - name: Run unit tests for other branches
-        run: ./ci/test.sh
+        run: echo run unit test for other branches
         if: ${{ ! startsWith(env.GITHUB_REF_SLUG, 'sandbox-') }}
 
       - name: Build Release
-        run: npm run build
+        run: yarn run build
 
       - name: Fail the workflow if test is skipped
         run: 'exit 1'
