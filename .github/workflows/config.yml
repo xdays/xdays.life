@@ -1,33 +1,12 @@
 name: main
 
 on:
-  push:
-    branches:
-      - master
-      - 'staging-*'
-      - 'sandbox-*'
+  push
 
 jobs:
-  test:
-    name: test
-    runs-on: ubuntu-latest
-
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v2
-
-      - name: Inject slug/short variables
-        uses: rlespinasse/github-slug-action@v3.x
-
-      - name: Run unit test
-        run: 'echo run unit test'
-        if: startsWith(env.GITHUB_REF_SLUG, 'sandbox-') && contains(github.event.head_commit.message, '@test')
-
   deploy:
     name: deploy
     runs-on: ubuntu-latest
-    needs:
-      - test
 
     steps:
       - name: Checkout code
@@ -36,12 +15,29 @@ jobs:
       - name: Inject slug/short variables
         uses: rlespinasse/github-slug-action@v3.x
 
+      - uses: actions/cache@v2
+        with:
+          path: |
+            node_modules
+          key: v2-${{ hashFiles('yarn.lock') }}
+        if: |
+          ${{ ( startsWith(env.GITHUB_REF_SLUG, 'sandbox-') && contains(github.event.head_commit.message, '#test')) ||
+          ! startsWith(env.GITHUB_REF_SLUG, 'sandbox-') }}
+
+      - name: Install Dependencies
+        run: yarn
+
+      - name: Run unit tests for sandbox branches
+        run: echo run unit test for sandbox branch when keyword is matched
+        if: startsWith(env.GITHUB_REF_SLUG, 'sandbox-') && contains(github.event.head_commit.message, '#test')
+
+      - name: Run unit tests for other branches
+        run: echo run unit test for other branches
+        if: ${{ ! startsWith(env.GITHUB_REF_SLUG, 'sandbox-') }}
+
       - name: Build Release
-        run: yarn &&  yarn run build
+        run: yarn run build
 
-      - name: Debug
-        run: 'echo ${{ env.GITHUB_REF_SLUG }}'
-
-      - name: Fail the workflow when test job is skipped
+      - name: Fail the workflow if test is skipped
         run: 'exit 1'
-        if: startsWith(env.GITHUB_REF_SLUG, 'sandbox-') && ! contains(github.event.head_commit.message, '@test')
+        if: startsWith(env.GITHUB_REF_SLUG, 'sandbox-') && ! contains(github.event.head_commit.message, '#test')
