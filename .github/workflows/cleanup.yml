@@ -11,6 +11,7 @@ jobs:
   cleanup:
     name: cleanup
     runs-on: ubuntu-latest
+    if: ${{ startsWith( github.head_ref, 'sandbox-' ) }} || ${{ startsWith( github.head_ref, 'sandbox-' ) }}
 
     steps:
       - name: Checkout code
