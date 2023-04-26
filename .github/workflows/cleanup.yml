@@ -3,6 +3,9 @@ name: cleanup
 on:
   pull_request:
     types: [closed]
+  delete:
+    branches:
+      - sandbox-**
 
 jobs:
   cleanup:
